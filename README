@@ -1,0 +1,17 @@
+API的使用：
+
+//获取文档根节点
+Element root = doc.getRootElement();
+
+//得到根节点的所有子节点
+List<Element> elementsList = root.elements();
+
+//获取根节点名称
+String name = element.getName();
+
+//获取节点值
+element.getText();
+element.getStringValue();
+element.getTextTrim();
+
+
