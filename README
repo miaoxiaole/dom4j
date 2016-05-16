@@ -1,4 +1,4 @@
-API的使用：
+dom4j（主要是用于解析xml文件）--API的使用：
 
 //获取文档根节点
 Element root = doc.getRootElement();
@@ -13,5 +13,11 @@ String name = element.getName();
 element.getText();
 element.getStringValue();
 element.getTextTrim();
+
+XStream--API：
+
+XStream的扩展---支持CDATA:
+CDATA：
+<message><![CDATA[text]]></message>
 
 

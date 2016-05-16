@@ -1,4 +1,7 @@
 <book>
     <name>格林童话</name>
-    <price>$3.99</price>
+    <price>
+        <chinese>￥5.51</chinese>
+        <english>$3.99</english>
+    </price>
 </book>
