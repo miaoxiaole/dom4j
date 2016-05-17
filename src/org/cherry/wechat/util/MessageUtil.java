@@ -1,12 +1,17 @@
 package org.cherry.wechat.util;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.core.util.QuickWriter;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
+import com.thoughtworks.xstream.io.xml.XppDriver;
+import org.cherry.wechat.message.*;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,6 +42,14 @@ public class MessageUtil {
     public static final String EVENT_TYPE_SUBSCRIBE="subscribe";
     public static final String EVENT_TYPE_UNSUBSCRIBE="unsubscribe";
 
+    /**
+     * 解析微信发来的请求XML
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+
     public static HashMap<String,String> parseXml(HttpServletRequest request) throws Exception {
         HashMap<String,String>map = new HashMap<String, String>();
 
@@ -64,6 +77,83 @@ public class MessageUtil {
                 recursiveParseXML(e,map);
             }
         }
+    }
+
+    /**
+     * xml转义，定义新的xstream
+     */
+    private static XStream xStream = new XStream(new XppDriver(){
+        @Override
+        public HierarchicalStreamWriter createWriter(Writer out) {
+            return new PrettyPrintWriter(out){
+                //对所有xml节点都进行CDATA标记
+                boolean cdata = true;
+
+
+                public void startNode(String name, Class clazz){
+                    super.startNode(name, clazz);
+                }
+
+                protected void writeText(QuickWriter writer, String text){
+                    if (cdata){
+                        writer.write("<![CDATA[");
+                        writer.write(text);
+                        writer.write("]]>");
+                    }
+                    else
+                        writer.write(text);
+                }
+
+            };
+        }
+    });
+
+    //文本消息
+    public static String messageToXML(TextMessage textMessage){
+
+        xStream.alias("xml",TextMessage.class);
+        return xStream.toXML(textMessage);
+
+    }
+
+    //图片消息
+    public static String messageToXML(ImageMessage imageMessage){
+
+        xStream.alias("xml",ImageMessage.class);
+        return xStream.toXML(imageMessage);
+
+    }
+
+    //音乐消息
+    public static String messageToXML(MusicMessage musicMessage){
+
+        xStream.alias("xml",MusicMessage.class);
+        return xStream.toXML(musicMessage);
+
+    }
+
+    //图文消息
+    public static String messageToXML(NewsMessage newsMessage){
+
+        xStream.alias("xml",NewsMessage.class);
+        xStream.alias("item",Artical.class);
+        return xStream.toXML(newsMessage);
+
+    }
+
+    //视频消息
+    public static String messageToXML(VideoMessage videoMessage){
+
+        xStream.alias("xml",VideoMessage.class);
+        return xStream.toXML(videoMessage);
+
+    }
+    //语音消息
+    public static String messageToXML(VoiceMessage voiceMessage){
+
+        xStream.alias("xml",VoiceMessage.class);
+        return xStream.toXML(voiceMessage);
+
     }
 
 }
