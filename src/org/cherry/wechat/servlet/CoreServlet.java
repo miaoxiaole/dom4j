@@ -42,6 +42,8 @@ public class CoreServlet {
         if (SignUtil.checkSignature(signature,timestamp,nonce)){
             //消息进行处理
             String respXml = CoreService.processRequest(request);
+            //得到处理结果,用户得到处理结果
+            out.write(respXml);
         }
     }
 
